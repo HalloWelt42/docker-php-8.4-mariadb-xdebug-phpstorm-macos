@@ -74,15 +74,8 @@ RUN a2enmod rewrite
 # Document Root auf /httpdocs setzen
 ENV APACHE_DOCUMENT_ROOT=/httpdocs
 
-# Apache Virtual Host Konfiguration anpassen
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-
-# AllowOverride All für .htaccess Support
-RUN sed -i '/<Directory \/httpdocs>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf || true
-
-# Eigene Apache-Konfiguration
-COPY config/apache-vhost.conf /etc/apache2/sites-available/000-default.conf
+# Apache Virtual Host Konfiguration
+COPY .docker/config/apache-vhost.conf /etc/apache2/sites-available/000-default.conf
 
 # -----------------------------------------------------------------------------
 # Arbeitsverzeichnis setzen

@@ -3,36 +3,37 @@
 # ===================
 /vendor/
 composer.lock
-composer.phar
 *.phar
-
-# PHP Cache
 *.cache
 *.log
-/cache/
-/logs/
 
 # PHPUnit
 .phpunit.result.cache
 .phpunit.cache/
-phpunit.xml
 
 # PHP CS Fixer
 .php-cs-fixer.cache
 .php_cs.cache
 
-# IDE & Editor Konfiguration
-.idea/
-.vscode/
-*.sublime-project
-*.sublime-workspace
-nbproject/
-
+# ===================
 # Environment
+# ===================
 .env
 .env.local
 .env.*.local
 .env.backup
+
+# ===================
+# IDE
+# ===================
+.idea/
+*.sublime-project
+*.sublime-workspace
+nbproject/
+
+# VS Code (launch.json behalten für Xdebug)
+.vscode/*
+!.vscode/launch.json
 
 # ===================
 # macOS
@@ -43,7 +44,6 @@ nbproject/
 ._*
 .Spotlight-V100
 .Trashes
-Icon?
 
 # ===================
 # Windows
@@ -51,15 +51,12 @@ Icon?
 Thumbs.db
 Thumbs.db:encryptable
 ehthumbs.db
-ehthumbs_vista.db
 Desktop.ini
 $RECYCLE.BIN/
 *.lnk
-*.stackdump
-[Dd]esktop.ini
 
 # ===================
-# Allgemein
+# Temporär
 # ===================
 *.bak
 *.swp

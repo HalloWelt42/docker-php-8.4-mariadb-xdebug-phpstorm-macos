@@ -14,7 +14,7 @@ services:
   php:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: .docker/Dockerfile
     container_name: php-dev
     ports:
       # Webserver auf Port 8080 erreichbar: http://localhost:8080
@@ -22,8 +22,8 @@ services:
     volumes:
       # Projektordner wird in /httpdocs/ gemountet
       - ./:/httpdocs/
-      # PHP Konfiguration
-      - ./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:ro
+      # PHP Konfiguration (überschreibt die im Image)
+      - ./.docker/config/php.ini:/usr/local/etc/php/conf.d/zzz-custom.ini:ro
     environment:
       # Xdebug Konfiguration für IDE-Verbindung
       XDEBUG_MODE: debug,develop
@@ -53,8 +53,8 @@ services:
     volumes:
       # Persistente Datenbank-Speicherung
       - db-data:/var/lib/mysql
-      # Initiale SQL-Skripte (optional)
-      - ./sql:/docker-entrypoint-initdb.d:ro
+      # Initiale SQL-Skripte (werden beim ersten Start ausgeführt)
+      - ./.docker/sql:/docker-entrypoint-initdb.d:ro
     healthcheck:
       # Wartet bis MariaDB bereit ist
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
@@ -65,7 +65,7 @@ services:
       - php-network
 
   # ---------------------------------------------------------------------------
-  # phpMyAdmin (optional, für Datenbank-Verwaltung)
+  # phpMyAdmin (Datenbank-Verwaltung)
   # ---------------------------------------------------------------------------
   phpmyadmin:
     image: phpmyadmin:latest
