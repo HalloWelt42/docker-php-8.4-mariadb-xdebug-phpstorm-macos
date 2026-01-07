@@ -1,0 +1,70 @@
+# ===================
+# PHP
+# ===================
+/vendor/
+composer.lock
+composer.phar
+*.phar
+
+# PHP Cache
+*.cache
+*.log
+/cache/
+/logs/
+
+# PHPUnit
+.phpunit.result.cache
+.phpunit.cache/
+phpunit.xml
+
+# PHP CS Fixer
+.php-cs-fixer.cache
+.php_cs.cache
+
+# IDE & Editor Konfiguration
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+nbproject/
+
+# Environment
+.env
+.env.local
+.env.*.local
+.env.backup
+
+# ===================
+# macOS
+# ===================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+
+# ===================
+# Windows
+# ===================
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+*.stackdump
+[Dd]esktop.ini
+
+# ===================
+# Allgemein
+# ===================
+*.bak
+*.swp
+*.swo
+*~
+*.tmp
+*.temp
+*.orig

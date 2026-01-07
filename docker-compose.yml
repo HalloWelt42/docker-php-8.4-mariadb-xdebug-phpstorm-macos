@@ -1,0 +1,97 @@
+# =============================================================================
+# PHP 8.4 Entwicklungsumgebung für macOS M4
+# =============================================================================
+# Starten: docker compose up -d
+# Stoppen: docker compose down
+# Logs:    docker compose logs -f
+# Shell:   docker compose exec php bash
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # PHP 8.4 + Apache + Xdebug
+  # ---------------------------------------------------------------------------
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php-dev
+    ports:
+      # Webserver auf Port 8080 erreichbar: http://localhost:8080
+      - "8080:80"
+    volumes:
+      # Projektordner wird in /httpdocs/ gemountet
+      - ./:/httpdocs/
+      # PHP Konfiguration
+      - ./config/php.ini:/usr/local/etc/php/conf.d/custom.ini:ro
+    environment:
+      # Xdebug Konfiguration für IDE-Verbindung
+      XDEBUG_MODE: debug,develop
+      # host.docker.internal funktioniert auf macOS automatisch
+      XDEBUG_CONFIG: client_host=host.docker.internal client_port=9003
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - php-network
+
+  # ---------------------------------------------------------------------------
+  # MariaDB Datenbank
+  # ---------------------------------------------------------------------------
+  db:
+    image: mariadb:11
+    container_name: php-db
+    ports:
+      # Datenbank extern erreichbar auf Port 3306
+      - "3306:3306"
+    environment:
+      # Zugangsdaten (für Entwicklung, nicht für Produktion!)
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: app
+      MARIADB_USER: dev
+      MARIADB_PASSWORD: dev
+    volumes:
+      # Persistente Datenbank-Speicherung
+      - db-data:/var/lib/mysql
+      # Initiale SQL-Skripte (optional)
+      - ./sql:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      # Wartet bis MariaDB bereit ist
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - php-network
+
+  # ---------------------------------------------------------------------------
+  # phpMyAdmin (optional, für Datenbank-Verwaltung)
+  # ---------------------------------------------------------------------------
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: php-pma
+    ports:
+      # phpMyAdmin auf Port 8081: http://localhost:8081
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: dev
+      PMA_PASSWORD: dev
+    depends_on:
+      - db
+    networks:
+      - php-network
+
+# -----------------------------------------------------------------------------
+# Netzwerk für Container-Kommunikation
+# -----------------------------------------------------------------------------
+networks:
+  php-network:
+    driver: bridge
+
+# -----------------------------------------------------------------------------
+# Persistente Volumes
+# -----------------------------------------------------------------------------
+volumes:
+  db-data:
+    name: php-dev-db
